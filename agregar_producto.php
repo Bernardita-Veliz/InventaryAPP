@@ -21,7 +21,7 @@
      $query  = "INSERT INTO products (";
      $query .=" name,tipo,quantity,categorie_id,clientes";
      $query .=") VALUES (";
-     $query .=" '{$p_name}', '{$p_tip}', '{$p_qty}'', '{$p_cat}',  '{$p_cli}";
+     $query .=" '{$p_name}', '{$p_tip}', '{$p_qty}', '{$p_cat}',  '{$p_cli}'";
      $query .=")";
      $query .=" ON DUPLICATE KEY UPDATE name='{$p_name}'";
      $sql  = "INSERT INTO products (name, tipo, quantity, categorie_id, clientes)";
