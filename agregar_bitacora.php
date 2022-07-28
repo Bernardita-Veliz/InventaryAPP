@@ -1,3 +1,46 @@
+<?php
+  $page_title = 'Agregar producto';
+  require_once('includes/load.php');
+  // Checkin What level user has permission to view this page
+  page_require_level(2);
+  $all_categories = find_all('categories');
+  $all_products = find_all('products');
+  $all_clientes = find_all('clientes');
+?>
+<?php
+ if(isset($_POST['add_product'])){
+   $req_fields = array('product-name','product-text');
+   validate_fields($req_fields);
+   $p_name  = remove_junk($db->escape($_POST['product-name']));
+   $p_tex   = remove_junk($db->escape($_POST['product-text']));
+
+   if(empty($errors)){
+     
+     $date    = make_date();
+     $query  = "INSERT INTO bitacora (";
+     $query .=" name,descripcion";
+     $query .=") VALUES (";
+     $query .=" '{$p_name}', '{$p_tex}'";
+     $query .=")";
+     $query .=" ON DUPLICATE KEY UPDATE name='{$p_name}'";
+     $sql  = "INSERT INTO products (name, descripcion)";
+     $sql .= " VALUES ('{$p_name}', '{$p_tex}')";
+     if($db->query($query)){
+       $session->msg('s',"bitacora agregado exitosamente. ");
+       redirect('administrar_bitacora.php', false);
+     } else {
+       $session->msg('d',' Lo siento, registro falló.');
+       redirect('administrar_bitacora.php', false);
+     }
+
+   } else{
+     $session->msg("d", $errors);
+     redirect('agregar_producto.php',false);
+   }
+
+ }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +48,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Dashboard - NiceAdmin Bootstrap Template</title>
+  <title>Agregar producto</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -37,7 +80,7 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.phps" class="logo d-flex align-items-center">
+      <a href="index.php" class="logo d-flex align-items-center">
         <img src="assets/img/logo.png" alt="">
         <span class="d-none d-lg-block">InventaryAPP</span>
       </a>
@@ -127,9 +170,9 @@
           <i class="bi bi-people-fill"></i><span>Clientes</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          
+
           <li>
-            <a href="tipo_producto.php">
+            <a href="administrar_cliente.php">
               <i class="bi bi-circle"></i><span>Administrar Clientes</span>
             </a>
           </li>
@@ -158,19 +201,16 @@
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="agregar_bitacora.php">
-              <i class="bi bi-circle"></i><span>Agregar_bitacora</span>
+              <i class="bi bi-circle"></i><span>Agregar bitacora</span>
             </a>
           </li>
           <li>
             <a href="administrar_bitacora.php">
-              <i class="bi bi-circle"></i><span>administrar_bitacora</span>
+              <i class="bi bi-circle"></i><span>Administrar bitacora</span>
             </a>
           </li>
         </ul>
       </li><!-- End Forms Nav -->
-
-      
-      <li class="nav-heading">Pages</li>
 
     </ul>
 
@@ -183,20 +223,68 @@
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="home.php">Home</a></li>
-          <li class="breadcrumb-item">Bitacoras</li>
-          <li class="breadcrumb-item active">Agregar bitacora</li>
+          <li class="breadcrumb-item">Productos</li>
+          <li class="breadcrumb-item active">Agregar productos</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
       <div class="row">
-
-        
-
+        <div class="row">
+          <div class="col-md-12">
+            <?php echo display_msg($msg); ?>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-9">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <strong>
+                  <span class="glyphicon glyphicon-th"></span>
+                  <span>Agregar producto</span>
+                </strong>
+              </div>
+              <div class="panel-body">
+                <div class="col-md-12">
+                  <form method="post" action="agregar_bitacora.php" class="clearfix">
+                    <div class="form-group">
+                      
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <select class="form-control" name="product-name">
+                              <option value="">Selecciona un producto</option>
+                            <?php  foreach ($all_products as $cat): ?>
+                              <option value="<?php echo (int)$cat['id'] ?>">
+                                <?php echo $cat['name'] ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                          </div>                      
+                        </div>
+                      </div><br>
+                    </div><br>
+                    <div class="form-group">
+                      <div class="row">                       
+                        <div class="col-md-4">
+                          <div class="input-group">
+                            <span class="input-group-addon">
+                              <i class="glyphicon glyphicon-shopping-cart"></i>
+                            </span>
+                            <input type="text" class="form-control" name="product-text" placeholder="Incidente">
+                          </div>
+                        </div>
+                      </div><br>
+                    </div>                    
+                    <button type="submit" name="add_product" class="btn btn-danger">Agregar producto</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
@@ -204,7 +292,6 @@
     <div class="copyright">
       &copy; Copyright <strong><span>Bernardita Veliz</span></strong>. All Rights Reserved
     </div>
-
   </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
