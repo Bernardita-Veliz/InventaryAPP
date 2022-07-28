@@ -118,11 +118,7 @@
               <i class="bi bi-circle"></i><span>Administrar Productos</span>
             </a>
           </li>
-          <li>
-            <a href="tipo_producto.php">
-              <i class="bi bi-circle"></i><span>Tipos de productos</span>
-            </a>
-          </li>
+          
         </ul>
       </li><!-- End Components Nav -->
 
@@ -163,12 +159,12 @@
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
             <a href="agregar_bitacora.php">
-              <i class="bi bi-circle"></i><span>Form Elements</span>
+              <i class="bi bi-circle"></i><span>agregar bitacora</span>
             </a>
           </li>
           <li>
             <a href="administrar_bitacora.php">
-              <i class="bi bi-circle"></i><span>Form Layouts</span>
+              <i class="bi bi-circle"></i><span>administrar bitacora </span>
             </a>
           </li>
         </ul>

@@ -7,7 +7,8 @@
 <?php
 $product = find_by_id('products',(int)$_GET['id']);
 $all_categories = find_all('categories');
-$all_photo = find_all('media');
+$all_clientes = find_all('clientes');
+
 if(!$product){
   $session->msg("d","Missing product id.");
   redirect('administrar_producto.php');
@@ -15,20 +16,16 @@ if(!$product){
 ?>
 <?php
  if(isset($_POST['product'])){
-    $req_fields = array('product-title','product-categorie','product-quantity','buying-price', 'saleing-price' );
+    $req_fields = array('product-name','product-tipo','product-quantity','product-categorie','product-cliente' );
     validate_fields($req_fields);
-
+      $p_name  = remove_junk($db->escape($_POST['product-name']));
+      $p_tip   = remove_junk($db->escape($_POST['product-tipo']));
+      $p_qty   = remove_junk($db->escape($_POST['product-quantity']));
+      $p_cat   = remove_junk($db->escape($_POST['product-categorie']));
+      $p_cli   = remove_junk($db->escape($_POST['product-cliente']));
    if(empty($errors)){
-       $p_name  = remove_junk($db->escape($_POST['product-title']));
-       $p_cat   = (int)$_POST['product-categorie'];
-       $p_qty   = remove_junk($db->escape($_POST['product-quantity']));
-       $p_buy   = remove_junk($db->escape($_POST['buying-price']));
-       $p_sale  = remove_junk($db->escape($_POST['saleing-price']));
-       if (is_null($_POST['product-photo']) || $_POST['product-photo'] === "") {
-         $clientes_id = '0';
-       } else {
-         $clientes_id = remove_junk($db->escape($_POST['product-cliente']));
-       }
+      
+      
        $c_cliente  = remove_junk($db->escape($_POST['product-name']));
        $c_cliente   = (int)$_POST['product-cliente'];
        $result = $db->query($query);
@@ -168,11 +165,7 @@ if(!$product){
               <i class="bi bi-circle"></i><span>Administrar Productos</span>
             </a>
           </li>
-          <li>
-            <a href="administrar_producto.php">
-              <i class="bi bi-circle"></i><span>Tipos de productos</span>
-            </a>
-          </li>
+         
         </ul>
       </li><!-- End Components Nav -->
 
@@ -264,13 +257,40 @@ if(!$product){
                     <div class="panel-body">
                         <div class="col-md-7">
                             <form method="post" action="edit_product.php?id=<?php echo (int)$product['id'] ?>">
-                                <div class="form-group">
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-th-large"></i>
+                                  </span>
+                                  <input type="text" class="form-control" name="product-name" placeholder="Nombre y/o Descripción">
+                                </div>
+                              </div><br>
+                              <div class="form-group">
+                                <div class="row">
+                                  <div class="col-md-4">
                                     <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="glyphicon glyphicon-th-large"></i>
-                                        </span>
-                                        <input type="text" class="form-control" name="product-title" value="<?php echo remove_junk($product['name']);?>">
+                                      <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-shopping-cart"></i>
+                                      </span>
+                                      <select class="form-control" name="product-tipo" placeholder="estado"  required>
+                                        <option value="Notebook">Notebook</option>
+                                        <option value="Computador de escritorio">Computador de escritorio</option>
+                                        <option value="Switch">Switch</option>
+                                        <option value="Router">Router</option> 
+                                        <option value="Access Point">Access Point</option>
+                                        <option value="Servidor">Servidor</option> 
+                                        <option value="Storage">Storage</option>                             
+                                      </select>
                                     </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="input-group">
+                                      <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-shopping-cart"></i>
+                                      </span>
+                                      <input type="number" class="form-control" name="product-quantity" placeholder="Cantidad" min="1">
+                                    </div>
+                                  </div>
                                 </div><br>
                                 <div class="form-group">
                                     <div class="row">
@@ -295,43 +315,7 @@ if(!$product){
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="qty">Cantidad</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="glyphicon glyphicon-shopping-cart"></i>
-                                                    </span>
-                                                    <input type="number" class="form-control" name="product-quantity" value="<?php echo remove_junk($product['quantity']); ?>">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="qty">Precio de compra</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="glyphicon glyphicon-usd"></i>
-                                                    </span>
-                                                    <input type="number" class="form-control" name="buying-price" value="<?php echo remove_junk($product['buy_price']);?>">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="qty">Precio de venta</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="glyphicon glyphicon-usd"></i>
-                                                    </span>
-                                                    <input type="number" class="form-control" name="saleing-price" value="<?php echo remove_junk($product['sale_price']);?>">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                               
                                 <button type="submit" name="product" class="btn btn-danger">Actualizar</button>
                             </form>
                         </div>

@@ -160,11 +160,7 @@
               <i class="bi bi-circle"></i><span>Administrar Productos</span>
             </a>
           </li>
-          <li>
-            <a href="tipo_producto.php">
-              <i class="bi bi-circle"></i><span>Tipos de productos</span>
-            </a>
-          </li>
+          
         </ul>
       </li><!-- End Components Nav -->
 
